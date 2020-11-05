@@ -1,10 +1,10 @@
 import transactions from './transactions';
 import middlewares from './middlewares';
 
-const listIncomes = async (req, res) => {
+const listExpenses = async (req, res) => {
     
     try {
-       const list = await transactions.getAllIncomes();
+       const list = await transactions.getAllExpenses();
        return res.status(200).json(list)
         
     } catch (error) {
@@ -14,61 +14,60 @@ const listIncomes = async (req, res) => {
     };  
 };
 
-const getIncomeById = async (req, res) => {
+const getExpenseById = async (req, res) => {
     const { id } =  req.params
 
     try {
-      const income = await transactions.getIncomeById(id);
-      return res.status(200).json(income);
+      const expense = await transactions.getExpenseById(id);
+      return res.status(200).json(expense);
         
     } catch (error) {
         const resError = error.stack || error;
         return res.status(400).json(resError);        
-    }
+    };
 };
 
-const insertIncome = async (req, res) => {
+const insertExpense = async (req, res) => {
+    
     try {
-      
-      const insert = await middlewares.validadeRequest(req); 
-      const newIncome = await transactions.inserIncome(insert);
-      return res.status(200).json(newIncome);
+      const insert = await middlewares.validadeRequest(req);
+      const newExpense = await transactions.inserExpense(insert);
+        return res.status(200).json(newExpense);
         
     } catch (error) {
         const resError = error.stack || error;
          return res.status(400).json(resError);        
-    }
+    };
 };
 
-const updateIncomeById = async (req, res) => {
+const updateExpenseById = async (req, res) => {
     const { id } =  req.params
 
-    try {
-       
+    try {       
        const update = await middlewares.validadeRequest(req); 
-       const updateIncome = await transactions.updateIncome(id, update)
-       return res.status(200).json(updateIncome);
+       const updateExpense = await transactions.updateExpense(id, update)
+       return res.status(200).json(updateExpense);
         
     } catch (error) {
         const resError = error.stack || error;
         return res.status(400).json(resError);    
-    }
+    };
 };
 
-const deleteIncomeById = async (req, res) => {
+const deleteExpenseById = async (req, res) => {
     const { id } =  req.params
 
     try {
-       
-        await transactions.deleteIncomeById(id)
-        return res.status(200).json(`Income with id: ${id} were deleted`);
+      
+        await transactions.deleteExpenseById(id)
+        return res.status(200).json(`Expense with id: ${id} were deleted`);
         
     } catch (error) {
         const resError = error.stack || error;
         return res.status(400).json(resError);    
-    }
+    };
 };
 
-const controller = { listIncomes, getIncomeById, insertIncome, updateIncomeById, deleteIncomeById }
+const controller = { listExpenses , getExpenseById , insertExpense, updateExpenseById , deleteExpenseById  }
 
 export default controller;

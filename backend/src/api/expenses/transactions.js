@@ -1,5 +1,6 @@
 import { MongoClient, ObjectID } from 'mongodb'
-import { updateSet  } from '../../utils/transactions'
+import { updateSet } from '../../utils/transactions'
+import dataTransformation from './data-transformation';
 
 const uri = `mongodb://localhost:${process.env.DBPORT}/${process.env.DBNAME}`;
 
@@ -13,15 +14,15 @@ let connection, db, collection;
 const runDataBase = async () => {
     connection = await MongoClient.connect(uri, options);
     db = await connection.db(process.env.DBNAME);
-    collection = db.collection("incomes");
+    collection = db.collection("expenses");
 };
 
-const getAllIncomes = async () => {
-    try {
-     
+const getAllExpenses = async () => {
+    try {    
+        
         await runDataBase();
-        const allIncomes =  await collection.find({}).toArray();
-        return allIncomes;
+        const allExpense = await collection.find({}).toArray();
+        return allExpense
         
     } catch (error) {
         throw error;
@@ -31,15 +32,15 @@ const getAllIncomes = async () => {
     };
 }
 
-const getIncomeById = async (id) => {
+const getExpenseById = async (id) => {
 
     const filter = {"_id" :ObjectID(id)}
 
     try {
      
         await runDataBase();
-        const income =  await collection.find(filter).toArray();
-        return income;
+        const expense = await collection.find(filter).toArray();
+        return  expense
         
     } catch (error) {
         throw error;
@@ -50,11 +51,13 @@ const getIncomeById = async (id) => {
 }
 
 
-const inserIncome = async (payload) => {
-    try {
-     
+const inserExpense = async (payload) => {
+    try {     
         await runDataBase();
-        await collection.insert(payload);
+        const formatedPayload = await dataTransformation.newExpense(payload);
+        await collection.insert(formatedPayload);
+        
+        return { success: true , payload };        
         
     } catch (error) {
         throw error;
@@ -64,15 +67,14 @@ const inserIncome = async (payload) => {
     };
 };
 
-const updateIncome = async (id, payload) => {
-    const filter = {"_id" :ObjectID(id)};
+const updateExpense = async (id, payload) => {
+    const filter = {"_id" : ObjectID(id)};
     const updateDocument = updateSet(payload)
     
     try {
         
         await runDataBase();
-        const update = await collection.updateOne(filter, updateDocument);
-        return update
+        await collection.updateOne(filter, updateDocument);
         
     } catch (error) {
         throw error;
@@ -82,13 +84,11 @@ const updateIncome = async (id, payload) => {
     };
 };
 
-const deleteIncomeById = async (id) => {
-    const filter = {"_id" :ObjectID(id)};
-
+const deleteExpenseById = async (id) => {
     try {
         
         await runDataBase();
-        await collection.deleteOne(filter);
+        await collection.deleteOne(id);
         
     } catch (error) {
         throw error;
@@ -98,6 +98,6 @@ const deleteIncomeById = async (id) => {
     };   
 };
 
-const transactions = { inserIncome, updateIncome, deleteIncomeById, getAllIncomes, getIncomeById }
+const transactions = { inserExpense, updateExpense, deleteExpenseById, getAllExpenses, getExpenseById }
 
 export default transactions

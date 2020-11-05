@@ -1,4 +1,4 @@
-const updateSet = ({value}) => {
+const updateSet = (value) => {
     return {
         $set: value
     }

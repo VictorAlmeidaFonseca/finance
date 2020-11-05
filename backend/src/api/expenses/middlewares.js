@@ -1,7 +1,7 @@
 import validators from "../../utils/validators"
 
-const mandatoryFields = ["value", "name"]
-const allAllowFields = ["value", "name", "description", "installments"]
+const mandatoryFields = ["value", "name", "dueDay"]
+const allAllowFields = [ "name" , "category" , "value" , "installments" , "description" , "dueDay"]
 
 
 const validadeRequest = async (request) => {
